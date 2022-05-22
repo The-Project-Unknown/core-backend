@@ -1,6 +1,4 @@
-using Amazon;
 using Amazon.S3;
-using Amazon.Util;
 using Api;
 using Api.Auth;
 using Api.Providers;
@@ -8,6 +6,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,7 +17,7 @@ builder.Configuration.AddCommandLine(args);
 
 // === Logging Setup ===
 builder.Logging.ClearProviders();
-builder.Logging.AddConsole();
+builder.Logging.AddSerilog(new LoggerConfiguration().ReadFrom.Configuration(builder.Configuration).CreateLogger());
 
 
 // === Database Setup ===
