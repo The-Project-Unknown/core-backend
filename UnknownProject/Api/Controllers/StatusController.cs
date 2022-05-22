@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers;
@@ -15,6 +16,7 @@ public class StatusController : ControllerBase
     
     
     [HttpGet]
+    [AllowAnonymous]
     public IActionResult Get()
     {
         return Ok("hello there");

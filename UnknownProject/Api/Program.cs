@@ -1,9 +1,13 @@
+using Amazon.S3;
 using Api;
+using Api.Auth;
+using Api.Providers;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
-
 
 // === Configuration Setup ===
 builder.Configuration.AddJsonFile("Settings/appsettings.Development.json", optional: true, reloadOnChange: true);
@@ -13,10 +17,6 @@ builder.Configuration.AddCommandLine(args);
 // === Logging Setup ===
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
-
-
-builder.Services.AddControllers();
-builder.Services.AddEndpointsApiExplorer();
 
 
 // === Database Setup ===
@@ -30,40 +30,113 @@ builder.Services.AddDbContext<ApiDbContext>(optionsBuilder =>
 });
 
 
-// === Swagger Setup ===
-builder.Services.AddSwaggerGen(options =>
+// === Cors Setup ===
+builder.Services.AddCors(options =>
 {
-    options.SwaggerDoc("v1", new OpenApiInfo
+    options.AddPolicy("AllowAllOrigin", policy =>
     {
-        Version = "v1",
-        Title = "UnknownProject API",
-        Description = "Meh.."
+        policy.AllowAnyHeader()
+            .AllowAnyMethod()
+            .SetIsOriginAllowed(origin => true)
+            .AllowCredentials();
     });
 });
 
 
+var domain = $"https://{builder.Configuration["Auth0:Domain"]}/";
+var t = "https://" + builder.Configuration["Auth0:Domain"].ToString() + "/authorize?audience=" +
+        builder.Configuration["Auth0:Audience"];
+
+// === Auth and Authorization Setup ===
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(options =>
+{
+    options.Authority = domain;
+    options.Audience = builder.Configuration["Auth0:Audience"];
+});
+
+
+
+builder.Services.AddAuthorization(options =>
+{
+    Enum.GetNames(typeof(AuthorizePolicy)).ToList().ForEach(policyName =>
+    {
+        options.AddPolicy(policyName,
+            policy => policy.Requirements.Add(new HasPermissionRequirement(policyName, domain)));
+    });
+});
+
+builder.Services.AddSingleton<IAuthorizationHandler, HasScopeHandler>();
+
+builder.Services.AddScoped<IAWSS3StorageService, AWSS3StorageService>();
+builder.Services.AddAWSService<IAmazonS3>();
+
+builder.Services.AddControllers();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddHttpContextAccessor();
+
+builder.Services.AddSwaggerGen(option =>
+{
+    option.SwaggerDoc("v1", new OpenApiInfo { Title = "Demo API", Version = "v1"});
+
+    option.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        In = ParameterLocation.Header,
+        Description = "Please enter a valid token",
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        BearerFormat = "JWT",
+        Scheme = "Bearer"
+    });
+    option.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type=ReferenceType.SecurityScheme,
+                    Id="Bearer"
+                }
+            },
+            new string[]{}
+        }
+    });
+});
+
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI(options =>
     {
-        options.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
-
-        options.InjectStylesheet("/swagger-ui/custom.css");
+        options.DisplayRequestDuration();
     });
 }
 
 app.UseHttpsRedirection();
+app.UseStaticFiles();
 
+app.UseCors("AllowSpecificOrigin");
+
+app.UseAuthentication();
 app.UseAuthorization();
 
-app.UseStaticFiles();
 app.MapControllers();
-
 app.Run();
+
+public partial class Program { }
+
+public enum AuthorizePolicy
+{
+    read,
+    write
+}
 
 
 public class DbConnectionSettings
