@@ -1,4 +1,6 @@
+using Amazon;
 using Amazon.S3;
+using Amazon.Util;
 using Api;
 using Api.Auth;
 using Api.Providers;
@@ -59,7 +61,6 @@ builder.Services.AddAuthentication(options =>
 });
 
 
-
 builder.Services.AddAuthorization(options =>
 {
     Enum.GetNames(typeof(AuthorizePolicy)).ToList().ForEach(policyName =>
@@ -71,9 +72,14 @@ builder.Services.AddAuthorization(options =>
 
 builder.Services.AddSingleton<IAuthorizationHandler, HasScopeHandler>();
 
+// === Add AWS services
 builder.Services.AddScoped<IAWSS3StorageService, AWSS3StorageService>();
+
+builder.Services.AddDefaultAWSOptions(builder.Configuration.GetAWSOptions());
 builder.Services.AddAWSService<IAmazonS3>();
 
+
+// === Oother services ===
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddHttpContextAccessor();
@@ -130,6 +136,7 @@ app.UseAuthorization();
 
 app.MapControllers();
 app.Run();
+
 
 public partial class Program { }
 
