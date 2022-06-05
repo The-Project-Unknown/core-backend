@@ -13,7 +13,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI(options =>
     {
         options.DisplayRequestDuration();
-        //options.InjectStylesheet("/css/swagger-ui/custom.css");
     });
 }
 
