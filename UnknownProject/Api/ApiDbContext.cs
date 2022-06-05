@@ -10,5 +10,5 @@ public class ApiDbContext : DbContext
         
     }
 
-    public virtual DbSet<TestingClassForDbContext> TestingClassForDbContext { get; set; }
+    public virtual DbSet<TestingClassForDbContext> TestingClassForDbContext { get; set; } = null!;
 }
