@@ -1,9 +1,9 @@
 using System.Runtime.Serialization;
 
-namespace Api.Eceptions;
+namespace Api.Exception;
 
 [Serializable]
-public class ConfigurationErrorsException : Exception
+public class ConfigurationErrorsException : System.Exception
 {
     public ConfigurationErrorsException()
     {
@@ -17,7 +17,7 @@ public class ConfigurationErrorsException : Exception
     {
     }
 
-    public ConfigurationErrorsException(string? message, Exception? innerException) : base(message, innerException)
+    public ConfigurationErrorsException(string? message, System.Exception? innerException) : base(message, innerException)
     {
     }
 }
@@ -37,7 +37,7 @@ public class ConfigurationMissingException : ConfigurationErrorsException
     {
     }
 
-    public ConfigurationMissingException(string? message, Exception? innerException) : base(message, innerException)
+    public ConfigurationMissingException(string? message, System.Exception? innerException) : base(message, innerException)
     {
     }
 }

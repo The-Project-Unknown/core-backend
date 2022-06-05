@@ -1,6 +1,6 @@
 using Amazon.S3;
 using Api.Auth;
-using Api.Eceptions;
+using Api.Exception;
 using Api.Providers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
