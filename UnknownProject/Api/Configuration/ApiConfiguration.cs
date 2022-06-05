@@ -1,5 +1,6 @@
 using Amazon.S3;
 using Api.Auth;
+using Api.Eceptions;
 using Api.Providers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -7,15 +8,17 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Serilog;
 
-namespace Api;
+namespace Api.Configuration;
 
 public static class ApiConfiguration
 {
-    public static void ConfigureConfigurationBuilder(this IConfigurationBuilder configuration, string[] args)
+    public static void ConfigureConfigurationBuilder(this IConfigurationBuilder configuration, string environmentName)
     {
         // === Configuration Setup ===
-        configuration.AddJsonFile("Settings/appsettings.Development.json", optional: true, reloadOnChange: true);
-        configuration.AddCommandLine(args);
+        var appsettingsFile = $"Settings/appsettings.{environmentName}.json"; 
+        if (!File.Exists(appsettingsFile))
+            throw new ConfigurationMissingException($"File {appsettingsFile} not found.");
+        configuration.AddJsonFile(appsettingsFile, optional: true, reloadOnChange: true);
     }
     
     

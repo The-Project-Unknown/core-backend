@@ -1,8 +1,13 @@
-using Api;
+using Api.Configuration;
 
-var builder = WebApplication.CreateBuilder(args);
-
-builder.Configuration.ConfigureConfigurationBuilder(args);
+var builder = WebApplication.CreateBuilder(
+    new WebApplicationOptions()
+    {
+        EnvironmentName = Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT") ?? "Development",
+        Args = args
+    }
+);
+builder.Configuration.ConfigureConfigurationBuilder(builder.Environment.EnvironmentName);
 builder.ConfigureUnknownProjectApi();
 
 var app = builder.Build();
@@ -10,10 +15,7 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI(options =>
-    {
-        options.DisplayRequestDuration();
-    });
+    app.UseSwaggerUI(options => { options.DisplayRequestDuration(); });
 }
 
 app.UseHttpsRedirection();

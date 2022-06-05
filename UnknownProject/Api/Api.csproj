@@ -28,8 +28,4 @@
       <ProjectReference Include="..\Models\Models.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <_ContentIncludedByDefault Remove="wwwroot\css\swagger-ui\custom.css" />
-    </ItemGroup>
-
 </Project>
