@@ -145,7 +145,7 @@ public class AuthController : ControllerBase
             
             return Ok(user);
         }
-        catch(Exception e)
+        catch(System.Exception e)
         {
             _logger.LogError(e.Message);
             

@@ -1,7 +1,10 @@
+using System;
 using Api.Configuration;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.Hosting;
 
 var builder = WebApplication.CreateBuilder(
-    new WebApplicationOptions()
+    options: new WebApplicationOptions
     {
         EnvironmentName = Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT") ?? "Development",
         Args = args
@@ -28,7 +31,6 @@ app.UseAuthorization();
 
 app.MapControllers();
 app.Run();
-
 public abstract partial class Program
 {
 }

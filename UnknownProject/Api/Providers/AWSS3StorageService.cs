@@ -32,7 +32,6 @@ public class AWSS3StorageService : IAWSS3StorageService
                 AutoCloseStream = true,
                 ContentType = formFile.ContentType
             };
-            var response = await _s3BucketClient.PutObjectAsync(putRequest);
             return location;
         }
     }
