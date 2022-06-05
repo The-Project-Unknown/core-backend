@@ -145,7 +145,7 @@ public class AuthController : ControllerBase
             
             return Ok(user);
         }
-        catch(Exception e)
+        catch(System.Exception e)
         {
             _logger.LogError(e.Message);
             
@@ -157,7 +157,7 @@ public class AuthController : ControllerBase
 }
 public class UserDTO
 {
-    public string Email { get; set; }
-    public string Password { get; set; }
-    public string Username { get; set; }
+    public string Email { get; set; } = null!;
+    public string Password { get; set; } = null!;
+    public string Username { get; set; } = null!;
 }
