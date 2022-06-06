@@ -1,10 +1,17 @@
+using System.IdentityModel.Tokens.Jwt;
+using System.Net.Http.Headers;
 using Amazon.S3;
 using Api.Auth;
 using Api.Providers;
+using Auth0.ManagementApi;
+using Auth0.ManagementApi.Clients;
+using Auth0.ManagementApi.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using Newtonsoft.Json;
+using RestSharp;
 using Serilog;
 
 namespace Api;
@@ -26,6 +33,8 @@ public static class ApiConfiguration
         ConfigureDatabase(builder.Configuration, builder.Services);
 
         ConfigureAuth(builder.Configuration, builder.Services);
+
+        ConfigureAuth0ManagementApi(builder.Configuration, builder.Services);
 
         ConfigureCors(builder.Services);
 
@@ -119,9 +128,20 @@ public static class ApiConfiguration
         services.AddAWSService<IAmazonS3>();
 
         //Services written by us should be registered right here
-
+        
+        services.AddScoped<Auth0UserManagementProvider>();
+        services.AddScoped<Auth0RoleManagementProvider>();
+        services.AddScoped<Auth0ManagementProvider>();
     }
-
+    
+    
+    static void ConfigureAuth0ManagementApi(IConfiguration configuration, IServiceCollection services)
+    {
+        services.AddSingleton<IManagementConnection, HttpClientManagementConnection>();
+        
+        services.AddHostedService<Auth0AccessTokenProlongerService>();
+    }
+    
 
     static void ConfigureSwagger(IServiceCollection services)
     {
@@ -154,5 +174,34 @@ public static class ApiConfiguration
                 }
             });
         });
+    }
+}
+public class Auth0Config {
+    public string ClientId { get; set; }
+    public string Domain { get; set; }
+    public string Audience { get; set; }
+    public Auth0ManagementConfig Management { get; set; }
+}
+
+
+public class Auth0ManagementConfig
+{
+    public string ClientId { get; set; }
+    public string ClientSecret { get; set; }
+    public string Domain { get; set; }
+    public string Audience { get; set; }
+}
+
+
+public class Auth0ManagmentTokenResponce
+{
+    public string access_token { get; set; }
+    public string expires_in { get; set; }
+    public string token_type { get; set; }
+    public string scope { get; set; }
+
+    public Auth0ManagmentTokenResponce GetToken()
+    {
+        return null;
     }
 }
