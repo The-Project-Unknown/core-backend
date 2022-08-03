@@ -17,9 +17,9 @@ public class Auth0AccessTokenProlongerService : IHostedService, IDisposable
     public Task StartAsync(CancellationToken stoppingToken)
     {
         //var autoEvent = new AutoResetEvent(false);
-        AskForManagementAccessToken(null);    
-            
-        var stateTimer = new Timer(AskForManagementAccessToken,/*autoEvent*/null,  10, 3000 );
+        AskForManagementAccessToken(null);
+
+        var stateTimer = new Timer(AskForManagementAccessToken,null, 10, 1000 * 60 * 60 * 24);
         
         _logger.LogInformation($"nameof(Auth0AccessTokenProlongerService) service is running");
         

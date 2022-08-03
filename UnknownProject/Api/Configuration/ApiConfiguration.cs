@@ -1,18 +1,13 @@
-using System.IdentityModel.Tokens.Jwt;
-using System.Net.Http.Headers;
 using Amazon.S3;
 using Api.Auth;
 using Api.Providers;
 using Auth0.ManagementApi;
-using Auth0.ManagementApi.Clients;
-using Auth0.ManagementApi.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
-using Newtonsoft.Json;
-using RestSharp;
 using Serilog;
+using Unknown.DataAccess;
 
 namespace Api;
 
@@ -23,6 +18,7 @@ public static class ApiConfiguration
         // === Configuration Setup ===
         configuration.AddJsonFile("Settings/appsettings.Development.json", optional: true, reloadOnChange: true);
         configuration.AddCommandLine(args);
+        configuration.AddEnvironmentVariables();
     }
     
     
@@ -44,7 +40,6 @@ public static class ApiConfiguration
 
         ConfigureSwagger(builder.Services);
     }
-    
 
     static void ConfigureLogging(IConfiguration configuration, ILoggingBuilder logging)
     {
@@ -62,7 +57,9 @@ public static class ApiConfiguration
         serviceCollection.AddDbContext<ApiDbContext>(optionsBuilder =>
         {
             optionsBuilder.UseNpgsql(
-                $@"User ID={dbConnectionSettings.User};Password={dbConnectionSettings.Password};Host={dbConnectionSettings.Host};Port={dbConnectionSettings.Port};Database={dbConnectionSettings.Database};");
+                $@"User ID={dbConnectionSettings.User};Password={dbConnectionSettings.Password};Host={dbConnectionSettings.Host};Port={dbConnectionSettings.Port};Database={dbConnectionSettings.Database};"
+                ,builder => builder.MigrationsAssembly("Api")
+                );
             optionsBuilder.EnableSensitiveDataLogging();
         });
     }
@@ -123,12 +120,15 @@ public static class ApiConfiguration
 
     static void ConfigureRuntimeDiService(IConfiguration configuration, IServiceCollection services)
     {
+        services.AddScoped<IFlashCardRepository, FlashCardsRepository>();
+        services.AddScoped<IRepositoryManager, RepositoryManager>();   
+        
+        
         services.AddScoped<IAWSS3StorageService, AWSS3StorageService>();
         services.AddDefaultAWSOptions(configuration.GetAWSOptions());
         services.AddAWSService<IAmazonS3>();
 
         //Services written by us should be registered right here
-        
         services.AddScoped<Auth0UserManagementProvider>();
         services.AddScoped<Auth0RoleManagementProvider>();
         services.AddScoped<Auth0ManagementProvider>();

@@ -1,7 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using Models;
+using Yieldigo.Models.BulkPricing;
 
-namespace Api;
+namespace Unknown.DataAccess;
 
 public class ApiDbContext : DbContext
 {
@@ -10,5 +11,5 @@ public class ApiDbContext : DbContext
         
     }
 
-    public virtual DbSet<TestingClassForDbContext> TestingClassForDbContext { get; set; }
+    public DbSet<FlashCard> FlashCards { get; set; }
 }

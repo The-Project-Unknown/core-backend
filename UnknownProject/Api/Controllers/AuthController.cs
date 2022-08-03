@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using Api.Providers;
 using Auth0.ManagementApi;
 using Auth0.ManagementApi.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -16,7 +17,6 @@ public class AuthController : ControllerBase
     public AuthController(ILogger<AuthController> logger, IManagementConnection managementConnection,IConfiguration configuration)
     {
         _logger = logger;
-       
         var _managementApiClient = new ManagementApiClient(configuration["Management:Token"], configuration["Management:Domain"], managementConnection);
     }
 
