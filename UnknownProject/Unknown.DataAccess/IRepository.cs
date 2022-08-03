@@ -1,16 +1,5 @@
 namespace Unknown.DataAccess;
 
-public interface ITimeTracked
-{
-    public DateTime CreationDateTime { get; set; }
-    public DateTime UpdateDateTime { get; set; }
-}
-
-public abstract class BaseEntity
-{
-    public long Id { get; set; }
-}
-
 public interface IRepository<T> where T : BaseEntity 
 {
     T GetById(long id);  
