@@ -58,7 +58,7 @@ public static class ApiConfiguration
         {
             optionsBuilder.UseNpgsql(
                 $@"User ID={dbConnectionSettings.User};Password={dbConnectionSettings.Password};Host={dbConnectionSettings.Host};Port={dbConnectionSettings.Port};Database={dbConnectionSettings.Database};"
-                ,builder => builder.MigrationsAssembly("Api")
+                ,builder => builder.MigrationsAssembly("Unknown.Api")
                 );
             optionsBuilder.EnableSensitiveDataLogging();
         });

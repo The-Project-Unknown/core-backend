@@ -1,10 +1,10 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Api", "Api\Api.csproj", "{07DBDC5C-641E-43FF-BD9F-98ACF1B55C54}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unknown.Api", "Unknown.Api\Unknown.Api.csproj", "{07DBDC5C-641E-43FF-BD9F-98ACF1B55C54}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Models", "Models\Models.csproj", "{6A3FE227-365A-4107-8032-72745D04B858}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unknown.Models", "Unknown.Models\Unknown.Models.csproj", "{6A3FE227-365A-4107-8032-72745D04B858}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Api.Tests", "Api.Tests\Api.Tests.csproj", "{13C0DBEA-6C74-4FC1-801C-F1CBB49DA447}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unknown.Api.Tests", "Unknown.Api.Tests\Unknown.Api.Tests.csproj", "{13C0DBEA-6C74-4FC1-801C-F1CBB49DA447}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HWTester", "HWTester\HWTester.csproj", "{A461154D-E55C-4216-9047-72FF8B6A57CE}"
 EndProject

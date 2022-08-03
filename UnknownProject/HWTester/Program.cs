@@ -26,6 +26,5 @@ public class Program
         
 
         logger.LogDebug("All done!");
-
     }
 }

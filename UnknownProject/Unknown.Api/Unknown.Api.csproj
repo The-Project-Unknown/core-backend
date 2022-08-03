@@ -6,6 +6,7 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
         <LangVersion>latestmajor</LangVersion>
+        <RootNamespace>Api</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
@@ -26,7 +27,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Models\Models.csproj" />
+      <ProjectReference Include="..\Unknown.Models\Unknown.Models.csproj" />
       <ProjectReference Include="..\Unknown.DataAccess\Unknown.DataAccess.csproj" />
     </ItemGroup>
 
