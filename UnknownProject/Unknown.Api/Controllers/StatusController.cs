@@ -8,6 +8,7 @@ namespace Api.Controllers;
 
 [ApiController, Route("/status")]
 [Route("/ping")]
+[Route("/")]
 public class StatusController : ControllerBase
 {
     private readonly ApiDbContext _db;
@@ -24,7 +25,7 @@ public class StatusController : ControllerBase
     [AllowAnonymous]
     public IActionResult Get()
     {
-        return Ok("hello there");
+        return Ok("Hello there");
     }
     
     [HttpGet("/test")]
