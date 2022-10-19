@@ -3,15 +3,15 @@
 # https://docs.microsoft.com/azure/devops/pipelines/languages/docker
 
 trigger:
-- main
+  - feature/Configuration
 
 resources:
-- repo: self
+  - repo: self
 
 variables:
   # Container registry service connection established during pipeline creation
-  dockerRegistryServiceConnection: '8978fe20-54e1-4d2b-8b09-6163fe648e88'
-  imageRepository: 'unknownapi'
+  dockerRegistryServiceConnection: 'c2fc26d8-9625-47c1-821c-2ddc607be340'
+  imageRepository: 'unknownprojecttestazuredevops'
   containerRegistry: 'hromisbasicregistry.azurecr.io'
   dockerfilePath: '$(Build.SourcesDirectory)/UnknownProject/Dockerfile'
   tag: '$(Build.BuildId)'
@@ -20,20 +20,27 @@ variables:
   vmImageName: 'ubuntu-latest'
 
 stages:
-- stage: Build
-  displayName: Build and push stage
-  jobs:
-  - job: Build
-    displayName: Build
-    pool:
-      vmImage: $(vmImageName)
-    steps:
-    - task: Docker@2
-      displayName: Build and push an image to container registry
-      inputs:
-        command: buildAndPush
-        repository: $(imageRepository)
-        dockerfile: $(dockerfilePath)
-        containerRegistry: $(dockerRegistryServiceConnection)
-        tags: |
-          $(tag)
+  - stage: Build
+    displayName: Build and push stage
+    
+    jobs:
+      - job: Build
+        displayName: Build
+        pool:
+          vmImage: $(vmImageName)
+        steps:
+          - task: Docker@2
+            displayName: Build and push an image to container registry
+            inputs:
+              command: buildAndPush
+              repository: $(imageRepository)
+              dockerfile: $(dockerfilePath)
+              containerRegistry: $(dockerRegistryServiceConnection)
+              tags: |
+                $(tag)
+          - task: AzureWebAppContainer@1
+            inputs:
+              azureSubscription: 'Azure subscription 1 (a8f62b8a-2a5e-4c79-acf6-834f61fcb856)'
+              appName: 'hromis-001-azdevops-dev-api'
+              imageName: $(containerRegistry)/$(imageRepository):$(tag)
+
