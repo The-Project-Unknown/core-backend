@@ -2,7 +2,7 @@
 WORKDIR /src
 
 COPY . .
-RUN dotnet restore "Unknown.Api/Unknown.Api.csproj" --disable-parallel
+RUN dotnet restore "Unknown.Api/Unknown.Api.csproj"
 RUN dotnet build "Unknown.Api/Unknown.Api.csproj" -c Release -o /app/build
 
 FROM build AS publish
